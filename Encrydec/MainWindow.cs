@@ -17,6 +17,8 @@ namespace Encrydec
         [UI] private TextView _keyField;
         [UI] private ComboBox _workModeField;
         [UI] private ComboBox _cryptoAlgorithmTypeField;
+        private bool _hasInputTextFieldContent;
+        private bool _hasKeyFieldContent;
 
         public MainWindow() : this(new Builder("MainWindow.glade")) {}
 
@@ -24,18 +26,39 @@ namespace Encrydec
         {
             builder.Autoconnect(this);
 
-            DeleteEvent += Window_DeleteEvent;
+            DeleteEvent += WindowDeleteEvent;
             _startButton.Clicked += StartButtonClicked;
+            _inputTextField.Buffer.Changed += InputTextFieldBufferChanged;
+            _keyField.Buffer.Changed += KeyFieldBufferChanged;
         }
 
-        private void Window_DeleteEvent(object sender, DeleteEventArgs a)
-        {
-            Application.Quit();
-        }
+        private void WindowDeleteEvent(object sender, DeleteEventArgs a) => Application.Quit();
 
         private void StartButtonClicked(object sender, EventArgs a)
         {
-            _outputTextField.Buffer.Text += "хоп";
+            _outputTextField.Buffer.Text = _cryptoAlgorithmTypeField.Active switch
+            {
+                0 => "0",
+                1 => "1",
+                _ => "2"
+            };
+        }
+        
+        private void InputTextFieldBufferChanged(object sender, EventArgs a)
+        {
+            _hasInputTextFieldContent = _inputTextField.Buffer.CharCount > 0;
+            UpdateStartButtonState();
+        }
+        
+        private void KeyFieldBufferChanged(object sender, EventArgs a)
+        {
+            _hasKeyFieldContent = _keyField.Buffer.CharCount > 0;
+            UpdateStartButtonState();
+        }
+
+        private void UpdateStartButtonState()
+        {
+            _startButton.Sensitive = _hasInputTextFieldContent && _hasKeyFieldContent;
         }
     }
 }
