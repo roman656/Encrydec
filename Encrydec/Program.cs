@@ -10,13 +10,12 @@ namespace Encrydec
         {
             Application.Init();
 
-            var app = new Application("roman656.Encrydec", GLib.ApplicationFlags.None);
-            app.Register(GLib.Cancellable.Current);
-
-            var win = new MainWindow();
-            app.AddWindow(win);
-
-            win.Show();
+            var application = new Application("roman656.Encrydec", GLib.ApplicationFlags.None);
+            var mainWindow = new MainWindow();
+            
+            application.Register(GLib.Cancellable.Current);
+            application.AddWindow(mainWindow);
+            mainWindow.Show();
             Application.Run();
         }
     }

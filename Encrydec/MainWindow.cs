@@ -1,4 +1,5 @@
 using System;
+using Encrydec.Ciphers;
 using Gtk;
 using UI = Gtk.Builder.ObjectAttribute;
 
@@ -36,12 +37,23 @@ namespace Encrydec
 
         private void StartButtonClicked(object sender, EventArgs a)
         {
-            _outputTextField.Buffer.Text = _cryptoAlgorithmTypeField.Active switch
+            switch (_cryptoAlgorithmTypeField.Active)
             {
-                0 => "0",
-                1 => "1",
-                _ => "2"
-            };
+                case 0:
+                {
+                    var scytale = new Scytale(_inputTextField.Buffer.Text, Convert.ToInt32(_keyField.Buffer.Text));
+                    
+                    _outputTextField.Buffer.Text = _workModeField.Active == 0 ? scytale.EncryptedMessage
+                            : scytale.DecryptedMessage;
+                    break;
+                }
+                case 1:
+                    _outputTextField.Buffer.Text = "1";
+                    break;
+                default:
+                    _outputTextField.Buffer.Text = "2";
+                    break;
+            }
         }
         
         private void InputTextFieldBufferChanged(object sender, EventArgs a)
@@ -58,7 +70,8 @@ namespace Encrydec
 
         private void UpdateStartButtonState()
         {
-            _startButton.Sensitive = _hasInputTextFieldContent && _hasKeyFieldContent;
+            _startButton.Sensitive = _hasInputTextFieldContent && _hasKeyFieldContent 
+                    && Scytale.CheckKey(_keyField.Buffer.Text, _inputTextField.Buffer.CharCount);
         }
     }
 }
