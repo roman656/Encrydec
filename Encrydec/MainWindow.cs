@@ -49,11 +49,23 @@ namespace Encrydec
                     break;
                 }
                 case 1:
-                    _outputTextField.Buffer.Text = "1";
+                {
+                    var polybiusSquare = new PolybiusSquare(_inputTextField.Buffer.Text,
+                            _keyField.Buffer.Text);
+
+                    _outputTextField.Buffer.Text = _workModeField.Active == 0 ? polybiusSquare.EncryptedMessage
+                            : polybiusSquare.DecryptedMessage;
                     break;
+                }
                 default:
-                    _outputTextField.Buffer.Text = "2";
+                {
+                    var twoSquareCipher = new TwoSquareCipher(_inputTextField.Buffer.Text,
+                            _keyField.Buffer.Text);
+
+                    _outputTextField.Buffer.Text = _workModeField.Active == 0 ? twoSquareCipher.EncryptedMessage
+                            : twoSquareCipher.DecryptedMessage;
                     break;
+                }
             }
         }
         
@@ -74,9 +86,12 @@ namespace Encrydec
         private void UpdateStartButtonState()
         {
             _startButton.Sensitive = _hasInputTextFieldContent && _hasKeyFieldContent 
-                    && (_cryptoAlgorithmTypeField.Active == 0 
+                    && (_cryptoAlgorithmTypeField.Active == 0
                     && Scytale.CheckKey(_keyField.Buffer.Text, _inputTextField.Buffer.CharCount)
-                    || _cryptoAlgorithmTypeField.Active == 1 || _cryptoAlgorithmTypeField.Active == 2);
+                    || _cryptoAlgorithmTypeField.Active == 1
+                    && PolybiusSquare.CheckKey(_keyField.Buffer.Text, _inputTextField.Buffer.Text)
+                    || _cryptoAlgorithmTypeField.Active == 2
+                    && TwoSquareCipher.CheckKey(_keyField.Buffer.Text, _inputTextField.Buffer.CharCount));
         }
     }
 }
