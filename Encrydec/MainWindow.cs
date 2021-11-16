@@ -31,6 +31,7 @@ namespace Encrydec
             _startButton.Clicked += StartButtonClicked;
             _inputTextField.Buffer.Changed += InputTextFieldBufferChanged;
             _keyField.Buffer.Changed += KeyFieldBufferChanged;
+            _cryptoAlgorithmTypeField.Changed += CryptoAlgorithmTypeFieldChanged;
         }
 
         private void WindowDeleteEvent(object sender, DeleteEventArgs a) => Application.Quit();
@@ -56,6 +57,8 @@ namespace Encrydec
             }
         }
         
+        private void CryptoAlgorithmTypeFieldChanged(object sender, EventArgs a) => UpdateStartButtonState();
+
         private void InputTextFieldBufferChanged(object sender, EventArgs a)
         {
             _hasInputTextFieldContent = _inputTextField.Buffer.CharCount > 0;
@@ -71,7 +74,9 @@ namespace Encrydec
         private void UpdateStartButtonState()
         {
             _startButton.Sensitive = _hasInputTextFieldContent && _hasKeyFieldContent 
-                    && Scytale.CheckKey(_keyField.Buffer.Text, _inputTextField.Buffer.CharCount);
+                    && (_cryptoAlgorithmTypeField.Active == 0 
+                    && Scytale.CheckKey(_keyField.Buffer.Text, _inputTextField.Buffer.CharCount)
+                    || _cryptoAlgorithmTypeField.Active == 1 || _cryptoAlgorithmTypeField.Active == 2);
         }
     }
 }

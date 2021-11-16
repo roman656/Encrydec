@@ -1,5 +1,3 @@
-using System;
-
 namespace Encrydec.Ciphers
 {
     public class Scytale
@@ -25,22 +23,27 @@ namespace Encrydec.Ciphers
             return result;
         }
 
+        private int GetColumnsAmount()
+        {
+            int columnsAmount;
+                
+            if (_message.Length % _key == 0)
+            {
+                columnsAmount = _message.Length / _key;
+            }
+            else
+            {
+                columnsAmount = (_message.Length + _key - _message.Length % _key) / _key;
+            }
+
+            return columnsAmount;
+        }
+
         public string EncryptedMessage
         {
             get
             {
-                int columnsAmount;
-                
-                if (_message.Length % _key == 0)
-                {
-                    columnsAmount = _message.Length / _key;
-                }
-                else
-                {
-                    columnsAmount = (_message.Length + _key - _message.Length % _key) / _key;
-                }
-
-                var matrix = new char[_key, columnsAmount];
+                var matrix = new char[_key, GetColumnsAmount()];
                 var result = "";
                 var k = 0;
 
@@ -76,18 +79,7 @@ namespace Encrydec.Ciphers
         {
             get
             {
-                int columnsAmount;
-                
-                if (_message.Length % _key == 0)
-                {
-                    columnsAmount = _message.Length / _key;
-                }
-                else
-                {
-                    columnsAmount = (_message.Length + _key - _message.Length % _key) / _key;
-                }
-
-                var matrix = new char[_key, columnsAmount];
+                var matrix = new char[_key, GetColumnsAmount()];
                 var result = "";
                 var k = 0;
 
