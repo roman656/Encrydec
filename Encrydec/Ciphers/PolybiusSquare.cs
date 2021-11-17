@@ -1,5 +1,4 @@
 using System;
-using System.Linq;
 
 namespace Encrydec.Ciphers
 {
@@ -16,28 +15,30 @@ namespace Encrydec.Ciphers
         
         public static bool CheckKey(string key, string message)
         {
-            var result = false;
             var hasError = false;
             var rows = key.Split('\n', StringSplitOptions.RemoveEmptyEntries);
+            var columnsAmount = rows[0].Length;
+            var uniqueElements = "";
 
             if (rows.Length > 1)
             {
                 foreach (var row in rows)
                 {
-                    var elements = row.Split(' ', StringSplitOptions.RemoveEmptyEntries);
-
-                    if (elements.Length != rows.Length)
+                    if (row.Length != columnsAmount)
                     {
+                        hasError = true;
                         break;
                     }
 
-                    foreach (var element in elements)
+                    foreach (var element in row)
                     {
-                        if (element.Length != 1)
+                        if (uniqueElements.Contains(element))
                         {
                             hasError = true;
                             break;
                         }
+
+                        uniqueElements += element;
                     }
 
                     if (hasError)
@@ -45,56 +46,53 @@ namespace Encrydec.Ciphers
                         break;
                     }
                 }
-                /*
-                var matrix = ConvertKeyToMatrix(key);
-                
-                if (matrix.Distinct().Count() != matrix.Length)
-                {
-                    hasError = true;
-                }*/
 
-                foreach (var letter in message)
+                if (!hasError)
                 {
-                    if (!key.Contains(letter))
+                    foreach (var letter in message)
                     {
-                        hasError = true;
-                        break;
+                        if (!uniqueElements.Contains(letter) && letter != '\n')
+                        {
+                            hasError = true;
+                            break;
+                        }
                     }
                 }
             }
+            else
+            {
+                hasError = true;
+            }
 
-            return result && !hasError;
+            return !hasError;
         }
 
-        private static char[][] ConvertKeyToMatrix(string key)
+        private static char[,] ConvertKeyToMatrix(string key)
         {
             var rows = key.Split('\n', StringSplitOptions.RemoveEmptyEntries);
-            var matrix = new char[rows.Length][];
+            var matrix = new char[rows.Length, rows[0].Length];
             
             for (var i = 0; i < rows.Length; i++)
             {
-                var elements = rows[i].Split(' ', StringSplitOptions.RemoveEmptyEntries);
-                matrix[i] = new char[elements.Length];
-                
-                for (var j = 0; j < elements.Length; j++)
+                for (var j = 0; j < rows[0].Length; j++)
                 {
-                    matrix[i][j] = elements[j].Trim().ToCharArray()[0];
+                    matrix[i, j] = rows[i][j];
                 }
             }
 
             return matrix;
         }
 
-        private static (int, int) FindLetterIndexes(char[][] matrix, char letter)
+        private static (int, int) FindLetterIndexes(char[,] matrix, char letter)
         {
             var rowIndex = -1;
             var columnIndex = -1;
             
-            for (var i = 0; i < matrix[0].Length; i++)
+            for (var i = 0; i < matrix.GetLength(0); i++)
             {
-                for (var j = 0; j < matrix[0].Length; j++)
+                for (var j = 0; j < matrix.GetLength(1); j++)
                 {
-                    if (matrix[i][j] == letter)
+                    if (matrix[i, j] == letter)
                     {
                         rowIndex = i;
                         columnIndex = j;
@@ -115,10 +113,15 @@ namespace Encrydec.Ciphers
 
                 foreach (var letter in _message)
                 {
+                    if (letter == '\n')
+                    {
+                        continue;
+                    }
+                    
                     var (i, j) = FindLetterIndexes(matrix, letter);
                     
                     i++;
-                    result += matrix[i >= matrix[0].Length ? 0 : i][j];
+                    result += matrix[i >= matrix.GetLength(0) ? 0 : i, j];
                 }
 
                 return result;
@@ -134,10 +137,15 @@ namespace Encrydec.Ciphers
 
                 foreach (var letter in _message)
                 {
+                    if (letter == '\n')
+                    {
+                        continue;
+                    }
+                    
                     var (i, j) = FindLetterIndexes(matrix, letter);
                     
                     i--;
-                    result += matrix[i < 0 ? matrix[0].Length - 1 : i][j];
+                    result += matrix[i < 0 ? matrix.GetLength(0) - 1 : i, j];
                 }
 
                 return result;
