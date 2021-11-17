@@ -90,8 +90,9 @@ namespace Encrydec
                     && Scytale.CheckKey(_keyField.Buffer.Text, _inputTextField.Buffer.CharCount)
                     || _cryptoAlgorithmTypeField.Active == 1
                     && PolybiusSquare.CheckKey(_keyField.Buffer.Text, _inputTextField.Buffer.Text)
-                    || _cryptoAlgorithmTypeField.Active == 2
-                    && TwoSquareCipher.CheckKey(_keyField.Buffer.Text, _inputTextField.Buffer.CharCount));
+                    || _cryptoAlgorithmTypeField.Active == 2 && _inputTextField.Buffer.CharCount % 2 == 0
+                    && !_inputTextField.Buffer.Text.Contains('\n')
+                    && TwoSquareCipher.CheckKey(_keyField.Buffer.Text, _inputTextField.Buffer.Text));
         }
     }
 }

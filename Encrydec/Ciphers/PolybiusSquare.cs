@@ -9,7 +9,7 @@ namespace Encrydec.Ciphers
         
         public PolybiusSquare(string message, string key)
         {
-            _message = message;
+            _message = message.Replace("\n", "");
             _key = key;
         }
         
@@ -113,11 +113,6 @@ namespace Encrydec.Ciphers
 
                 foreach (var letter in _message)
                 {
-                    if (letter == '\n')
-                    {
-                        continue;
-                    }
-                    
                     var (i, j) = FindLetterIndexes(matrix, letter);
                     
                     i++;
@@ -137,11 +132,6 @@ namespace Encrydec.Ciphers
 
                 foreach (var letter in _message)
                 {
-                    if (letter == '\n')
-                    {
-                        continue;
-                    }
-                    
                     var (i, j) = FindLetterIndexes(matrix, letter);
                     
                     i--;
