@@ -9,62 +9,8 @@ namespace Encrydec.Ciphers
         
         public PolybiusSquare(string message, string key)
         {
-            _message = message.Replace("\n", "");
+            _message = message;
             _key = key;
-        }
-        
-        public static bool CheckKey(string key, string message)
-        {
-            var hasError = false;
-            var rows = key.Split('\n', StringSplitOptions.RemoveEmptyEntries);
-            var columnsAmount = rows[0].Length;
-            var uniqueElements = "";
-
-            if (rows.Length > 1)
-            {
-                foreach (var row in rows)
-                {
-                    if (row.Length != columnsAmount)
-                    {
-                        hasError = true;
-                        break;
-                    }
-
-                    foreach (var element in row)
-                    {
-                        if (uniqueElements.Contains(element))
-                        {
-                            hasError = true;
-                            break;
-                        }
-
-                        uniqueElements += element;
-                    }
-
-                    if (hasError)
-                    {
-                        break;
-                    }
-                }
-
-                if (!hasError)
-                {
-                    foreach (var letter in message)
-                    {
-                        if (!uniqueElements.Contains(letter) && letter != '\n')
-                        {
-                            hasError = true;
-                            break;
-                        }
-                    }
-                }
-            }
-            else
-            {
-                hasError = true;
-            }
-
-            return !hasError;
         }
 
         private static char[,] ConvertKeyToMatrix(string key)

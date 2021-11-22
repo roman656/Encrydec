@@ -10,18 +10,6 @@ namespace Encrydec.Ciphers
             _message = message;
             _key = key;
         }
-        
-        public static bool CheckKey(string key, int messageLength)
-        {
-            var result = false;
-            
-            if (int.TryParse(key, out var value))
-            {
-                result = value > 1 && value < messageLength;
-            }
-
-            return result;
-        }
 
         private int GetColumnsAmount()
         {

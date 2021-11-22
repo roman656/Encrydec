@@ -18,8 +18,6 @@ namespace Encrydec
         [UI] private TextView _keyField;
         [UI] private ComboBox _workModeField;
         [UI] private ComboBox _cryptoAlgorithmTypeField;
-        private bool _hasInputTextFieldContent;
-        private bool _hasKeyFieldContent;
 
         public MainWindow() : this(new Builder("MainWindow.glade")) {}
 
@@ -35,12 +33,15 @@ namespace Encrydec
         }
 
         private void WindowDeleteEvent(object sender, DeleteEventArgs a) => Application.Quit();
+        private void CryptoAlgorithmTypeFieldChanged(object sender, EventArgs a) => UpdateStartButtonState();
+        private void InputTextFieldBufferChanged(object sender, EventArgs a) => UpdateStartButtonState();
+        private void KeyFieldBufferChanged(object sender, EventArgs a) => UpdateStartButtonState();
 
         private void StartButtonClicked(object sender, EventArgs a)
         {
-            switch (_cryptoAlgorithmTypeField.Active)
+            switch ((CipherType)_cryptoAlgorithmTypeField.Active)
             {
-                case 0:
+                case CipherType.Scytale:
                 {
                     var scytale = new Scytale(_inputTextField.Buffer.Text, Convert.ToInt32(_keyField.Buffer.Text));
                     
@@ -48,7 +49,7 @@ namespace Encrydec
                             : scytale.DecryptedMessage;
                     break;
                 }
-                case 1:
+                case CipherType.PolybiusSquare:
                 {
                     var polybiusSquare = new PolybiusSquare(_inputTextField.Buffer.Text,
                             _keyField.Buffer.Text);
@@ -68,31 +69,12 @@ namespace Encrydec
                 }
             }
         }
-        
-        private void CryptoAlgorithmTypeFieldChanged(object sender, EventArgs a) => UpdateStartButtonState();
-
-        private void InputTextFieldBufferChanged(object sender, EventArgs a)
-        {
-            _hasInputTextFieldContent = _inputTextField.Buffer.CharCount > 0;
-            UpdateStartButtonState();
-        }
-        
-        private void KeyFieldBufferChanged(object sender, EventArgs a)
-        {
-            _hasKeyFieldContent = _keyField.Buffer.CharCount > 0;
-            UpdateStartButtonState();
-        }
 
         private void UpdateStartButtonState()
         {
-            _startButton.Sensitive = _hasInputTextFieldContent && _hasKeyFieldContent 
-                    && (_cryptoAlgorithmTypeField.Active == 0
-                    && Scytale.CheckKey(_keyField.Buffer.Text, _inputTextField.Buffer.CharCount)
-                    || _cryptoAlgorithmTypeField.Active == 1
-                    && PolybiusSquare.CheckKey(_keyField.Buffer.Text, _inputTextField.Buffer.Text)
-                    || _cryptoAlgorithmTypeField.Active == 2 && _inputTextField.Buffer.CharCount % 2 == 0
-                    && !_inputTextField.Buffer.Text.Contains('\n')
-                    && TwoSquareCipher.CheckKey(_keyField.Buffer.Text, _inputTextField.Buffer.Text));
+            _startButton.Sensitive = CiphersParametersValidator.CheckMessageAndKey(_keyField.Buffer.Text,
+                    _inputTextField.Buffer.Text, (CipherType)_cryptoAlgorithmTypeField.Active);
+
         }
     }
 }
