@@ -1,22 +1,21 @@
+namespace Encrydec;
+
 using System;
 using Gtk;
 
-namespace Encrydec
+public static class Program
 {
-    public static class Program
+    [STAThread]
+    public static void Main(string[] args)
     {
-        [STAThread]
-        public static void Main(string[] args)
-        {
-            Application.Init();
+        Application.Init();
 
-            var application = new Application("roman656.Encrydec", GLib.ApplicationFlags.None);
-            var mainWindow = new MainWindow();
+        var application = new Application("roman656.Encrydec", GLib.ApplicationFlags.None);
+        var mainWindow = new MainWindow();
             
-            application.Register(GLib.Cancellable.Current);
-            application.AddWindow(mainWindow);
-            mainWindow.Show();
-            Application.Run();
-        }
+        application.Register(GLib.Cancellable.Current);
+        application.AddWindow(mainWindow);
+        mainWindow.Show();
+        Application.Run();
     }
 }

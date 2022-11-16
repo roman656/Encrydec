@@ -1,9 +1,9 @@
-namespace Encrydec.Ciphers
+namespace Encrydec.Ciphers;
+
+public enum CipherType
 {
-    public enum CipherType
-    {
-        Scytale,
-        PolybiusSquare,
-        TwoSquareCipher
-    }
+    Scytale,
+    PolybiusSquare,
+    TwoSquareCipher,
+    Gronsfeld
 }
