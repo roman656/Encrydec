@@ -52,6 +52,14 @@ public class MainWindow : Window
                         : polybiusSquare.DecryptedMessage;
                 break;
             }
+            case CipherType.TwoSquareCipher:
+            {
+                var twoSquareCipher = new TwoSquareCipher(_inputTextField.Buffer.Text, _keyField.Buffer.Text);
+
+                _outputTextField.Buffer.Text = _workModeField.Active == 0 ? twoSquareCipher.EncryptedMessage
+                        : twoSquareCipher.DecryptedMessage;
+                break;
+            }
             case CipherType.Gronsfeld:
             {
                 var gronsfeld = new Gronsfeld(_inputTextField.Buffer.Text, _keyField.Buffer.Text);
@@ -62,10 +70,10 @@ public class MainWindow : Window
             }
             default:
             {
-                var twoSquareCipher = new TwoSquareCipher(_inputTextField.Buffer.Text, _keyField.Buffer.Text);
+                var singlePermutation = new SinglePermutation(_inputTextField.Buffer.Text, _keyField.Buffer.Text);
 
-                _outputTextField.Buffer.Text = _workModeField.Active == 0 ? twoSquareCipher.EncryptedMessage
-                        : twoSquareCipher.DecryptedMessage;
+                _outputTextField.Buffer.Text = _workModeField.Active == 0 ? singlePermutation.EncryptedMessage
+                        : singlePermutation.DecryptedMessage;
                 break;
             }
         }

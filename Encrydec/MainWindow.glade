@@ -116,6 +116,7 @@
               <item id="1" translatable="yes">Полибианский квадрат</item>
               <item id="2" translatable="yes">Шифр Уитстона</item>
               <item id="3" translatable="yes">Шифр Гронсфельда</item>
+              <item id="4" translatable="yes">Одиночная перестановка</item>
             </items>
           </object>
           <packing>

@@ -17,6 +17,7 @@ public static class CiphersParametersValidator
             CipherType.Scytale => message.Length > 0,
             CipherType.PolybiusSquare => message.Length > 0 && !message.Contains('\n'),
             CipherType.Gronsfeld => message.Length > 0,
+            CipherType.SinglePermutation => message.Length > 0 && !message.Contains('\n'),
             _ => message.Length > 0 && !message.Contains('\n') && message.Length % 2 == 0
         };
     }
@@ -28,6 +29,7 @@ public static class CiphersParametersValidator
             CipherType.Scytale => CheckScytaleKey(key, message),
             CipherType.PolybiusSquare => CheckPolybiusSquareKey(key, message),
             CipherType.Gronsfeld => CheckGronsfeldKey(key, message),
+            CipherType.SinglePermutation => CheckSinglePermutationKey(key),
             _ => CheckTwoSquareCipherKey(key, message)
         };
     }
@@ -66,7 +68,9 @@ public static class CiphersParametersValidator
 
         return isValid;
     }
-        
+    
+    private static bool CheckSinglePermutationKey(string key) => key.Length > 0 && key.All(char.IsLetterOrDigit);
+
     private static bool CheckGronsfeldKey(string key, string message)
     {
         if (key.Length > message.Length || key.Length <= 0)    // Если длина ключа некорректна.

@@ -5,5 +5,6 @@ public enum CipherType
     Scytale,
     PolybiusSquare,
     TwoSquareCipher,
-    Gronsfeld
+    Gronsfeld,
+    SinglePermutation
 }
